@@ -1,82 +1,97 @@
-let con = document.querySelectorAll(".con");
-let computer = document.querySelectorAll(".computer");
-let trinagle = document.querySelector(".trinagle");
-let user = document.querySelector(".user");
-let machine = document.querySelector(".machine");
-let winModal = document.querySelector(".win-modal");
-let winner = document.querySelector(".winner");
-let play = document.querySelector(".play");
-let random = Math.floor(Math.random() * 3);
-let ruleBtn = document.querySelector(".btn-rule");
-let rulemodal = document.querySelector(".rule-modal");
-let ruleimg = document.querySelector(".rule-img");
-let score = JSON.parse(localStorage.getItem("sc"));
-let scoreElem = document.getElementById("score");
-// let score5= document.getElementById("score2");
-// let score6 = JSON.parse(localStorage.getItem("score2"));
-if (score) {
-  scoreElem.innerText == score;
-}
-// if(score2){
-//   score5.innerHTML==score2;
-// }
-let count = 0;
-con.forEach((element, index) => {
-  element.addEventListener("click", () => {
-    user.style.opacity = "1";
-    trinagle.style.display = "none";
-    con.forEach((item) => {
-      item.style.display = "none";
-    });
-    element.style.display = "block";
-    element.classList.add("show");
-    setTimeout(() => {
-      machine.style.opacity = "1";
-      setTimeout(() => {
-        computer[random].style.display = "block";
-        computer[random].classList.add("right");
-      }, 1000);
-    }, 500);
-    setTimeout(() => {
-      if (random == index) {
-        winModal.style.display = "grid";
-        winner.innerHTML = "TIE UP";
-      } else if (
-        (index == 1 && random == 2) ||
-        (index == 0 && random == 1) ||
-        (index == 2 && random == 0)
-      ) {
-        winModal.style.display = "grid";
-        winner.innerHTML = "YOU WIN";
-        count = score;
-        count++;
-        scoreElem.innerText = count;
-        localStorage.setItem("sc", JSON.stringify(count));
-      } else {
-        winModal.style.display = "grid";
-        winner.innerHTML = "YOU LOST";
-        // count=score5;
-        // count++;
-        // score5.innerText=count;
-        // localStorage.setItem("score2",JSON.stringify(count));
-      }
-    }, 1500);
-  });
+let chooseBox = document.querySelectorAll('.box');
+
+let optionArr = ['rock', 'paper', 'scissor'];
+let yourPoint = 0;
+
+//All the Selecting Option button
+chooseBox.forEach(element => {
+
+    element.addEventListener('click', () => {
+        let userClicked = element.className.split(' ')[0];
+        console.log(userClicked);
+
+        let randomComp = Math.floor(Math.random() * 3);
+        let compClicked = optionArr[randomComp];
+        console.log(compClicked);
+
+        checkWin(userClicked, compClicked);
+    })
 });
 
-play.addEventListener("click", () => {
-  window.location.reload();
-});
-ruleBtn.addEventListener("click", () => {
-  rulemodal.style.display = "flex";
-  setTimeout(() => {
-    ruleimg.style.transform = "translateY(0)";
-  }, 200);
-});
-let close=document.querySelector(".close");
-close.addEventListener("click", ()=>{
-  ruleimg.style.transform = "translateY(-200%)";
-  setTimeout(() => {
-    rulemodal.style.display = "none";
-  }, 200);
-})
+// Checking the whole scenario who win or lose
+function checkWin(user, comp) {
+    if (user === comp) {
+        
+        tryAgain.style.display = 'inline';
+    } 
+    else if (user == 'rock' && comp == 'paper') {
+        
+        setArea(user, 'LOST', comp);
+    } 
+    else if (user == 'rock' && comp == 'scissor') {
+        
+        setArea(user, 'WIN', comp);
+    } 
+    else if (user == 'paper' && comp == 'rock') {
+       
+        setArea(user, 'WIN', comp);
+    } 
+    else if (user == 'paper' && comp == 'scissor') {
+       
+        setArea(user, 'LOST', comp);
+    } 
+    else if (user == 'scissor' && comp == 'rock') {
+       
+        setArea(user, 'LOST', comp);
+    } 
+    else if (user == 'scissor' && comp == 'paper') {
+
+        setArea(user, 'WIN', comp);
+    }
+}
+
+let tryAgain = document.querySelector('.try')//Try again (if tie)
+
+let playArea = document.querySelector('.playArea');
+let rock = document.querySelector('.rock');
+let paper = document.querySelector('.paper');
+let scissor = document.querySelector('.scissor');
+
+let initialOn = document.querySelector('.initialOn');
+let initialOff = document.querySelector('.initialOff');
+
+//Diplaying the area where choose the option
+function setArea(user, mid, comp) {
+
+    tryAgain.style.display = 'none';
+
+    initialOn.style.display = 'none';
+    initialOff.style.display = 'flex';
+
+    initialOff.innerHTML = `<div class="${user} box">You Picked<img src="image/${user}.png" alt="rock"></div>
+                            <div class="box mid-man">
+                                <h3>YOU ${mid}</h3>
+                                <p>AGAINST PC</p>
+                                <button onclick='playAgain()'>Play Again</button>
+                            </div>
+                            <div class="${comp} box">PC Picked<img src="image/${comp}.png" alt="rock"></div>`
+
+    // Update YourScore if you win
+    if (mid === 'WIN') {
+        yourPoint++;
+        document.querySelector('#score').innerHTML = yourPoint;  
+    }
+}
+
+function playAgain() {  //Play again button
+    initialOn.style.display = 'flex';
+    initialOff.style.display = 'none';
+
+}
+
+function gameRule() {  //Game Rule Button
+    let ruleBtn = document.querySelector('.game-rule');
+
+    ruleBtn.style.display != 'inline-block' ? ruleBtn.style.display = 'inline-block' : ruleBtn.style.display = 'none';
+    
+}
